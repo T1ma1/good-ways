@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /404.html
+
+# Sitemap: https://good-ways.ru/sitemap.xml — добавить при переносе на боевой домен
