@@ -85,6 +85,29 @@
   }), { threshold: 0.25, rootMargin: '0px 0px -8% 0px' });
   $$('[data-split], .cargo, #facts').forEach(el => io.observe(el));
 
+  /* ---------- телефон: строки грузов оживают у середины экрана, подвал — в кадре ---------- */
+  if (!FINE) {
+    const cio = new IntersectionObserver(es => es.forEach(e => e.target.classList.toggle('is-act', e.isIntersecting)), { rootMargin: '-44% 0px -44% 0px' });
+    $$('.cargo-row').forEach(r => cio.observe(r));
+    new IntersectionObserver(([e]) => e.target.classList.toggle('is-in', e.isIntersecting), { threshold: 0.6 }).observe($('.ftr-word'));
+  }
+
+  /* ---------- нижняя панель на телефоне ---------- */
+  (function mbar() {
+    const bar = $('#mbar'), zones = [$('#calc'), $('.ftr')];
+    const seen = new Set();
+    let inHow = false;   // на коротком экране панель не должна закрывать шаги закреплённой секции
+    new IntersectionObserver(([e]) => { inHow = e.isIntersecting; upd(); }, { rootMargin: '-50% 0px -50% 0px' }).observe($('#how'));
+    const upd = () => bar.classList.toggle('is-on', scrollY > innerHeight * 0.7 && !seen.size && !(inHow && innerHeight < 740) && !nav.classList.contains('is-open'));
+    const zio = new IntersectionObserver(es => {
+      es.forEach(e => { if (e.isIntersecting) seen.add(e.target); else seen.delete(e.target); });
+      upd();
+    }, { threshold: 0.12 });
+    zones.forEach(z => zio.observe(z));
+    addEventListener('scroll', upd, { passive: true });
+    burger.addEventListener('click', () => setTimeout(upd, 0));
+  })();
+
   /* ---------- счётчики ---------- */
   const facts = $('#facts');
   new IntersectionObserver((es, o) => {
@@ -123,6 +146,12 @@
   const spPal = $('#spPal'), spVol = $('#spVol'), spKey = $('#spKey'), spVal = $('#spVal'), cfgNote = $('#cfgNote'), cfgTemp = $('#cfgTemp');
   let cfgSeen = false, cfgType = 'ref';
 
+  // в горизонтальной ленте (телефон) активная кнопка сама выезжает в центр
+  function centerIn(el) {
+    const w = el.parentElement;
+    if (w.scrollWidth <= w.clientWidth + 2) return;
+    w.scrollTo({ left: el.offsetLeft - w.offsetLeft - (w.clientWidth - el.offsetWidth) / 2, behavior: RM ? 'auto' : 'smooth' });
+  }
   function countTo(el, to, finalTxt) {
     if (RM) { el.textContent = finalTxt; return; }
     const t0 = performance.now(), dur = 900;
@@ -138,6 +167,11 @@
     const total = bw + 18 + 84, x0 = (1000 - total) / 2, y0 = (300 - bh) / 2;
     cfgSvg.classList.remove('is-loaded');
     cfgSvg.innerHTML = '';
+    // на узком экране кадр подгоняется под машину, чтобы схема была крупной
+    if (innerWidth < 900) {
+      const m = T.arrows ? 46 : 16, vw = total + m * 2, vh = Math.max(bh + (T.arrows ? 96 : 40), vw * 0.3);
+      cfgSvg.setAttribute('viewBox', [x0 - m, 150 - vh / 2, vw, vh].join(' '));
+    } else cfgSvg.setAttribute('viewBox', '0 0 1000 300');
     svg('rect', { class: 'c-body', x: x0, y: y0, width: bw, height: bh, rx: 8 }, cfgSvg);
     if (T.ins) svg('rect', { class: 'c-ins', x: x0 + 5, y: y0 + 5, width: bw - 10, height: bh - 10, rx: 5 }, cfgSvg);
     svg('path', { class: 'c-line', d: `M${x0} ${y0 + 14}V${y0 + bh - 14}` }, cfgSvg);                 // задние двери
@@ -179,6 +213,7 @@
   function pickTab(tab, focus) {
     tabs.forEach(t => { const on = t === tab; t.setAttribute('aria-selected', String(on)); t.tabIndex = on ? 0 : -1; });
     if (focus) tab.focus();
+    centerIn(tab);
     cfgType = tab.dataset.type;
     buildCfg(cfgType);
   }
@@ -332,8 +367,23 @@
     function pick(i, focus) {
       names.forEach((n, k) => { n.setAttribute('aria-selected', String(k === i)); n.tabIndex = k === i ? 0 : -1; });
       quotes.forEach((q, k) => q.classList.toggle('is-on', k === i));
+      dots.forEach((d, k) => d.classList.toggle('is-on', k === i));
+      cur = i;
       if (focus) names[i].focus();
+      centerIn(names[i]);
     }
+    // телефон: отзыв листается свайпом, под ним полоски-счётчик
+    let cur = 0, sx = 0, sy = 0;
+    const bodyEl = $('.rev-body'), dotsEl = document.createElement('div');
+    dotsEl.className = 'rev-dots'; dotsEl.setAttribute('aria-hidden', 'true');
+    dotsEl.innerHTML = names.map((_, k) => '<i' + (k ? '' : ' class="is-on"') + '></i>').join('');
+    bodyEl.appendChild(dotsEl);
+    const dots = $$('i', dotsEl);
+    bodyEl.addEventListener('touchstart', e => { sx = e.touches[0].clientX; sy = e.touches[0].clientY; }, { passive: true });
+    bodyEl.addEventListener('touchend', e => {
+      const dx = e.changedTouches[0].clientX - sx, dy = e.changedTouches[0].clientY - sy;
+      if (Math.abs(dx) > 44 && Math.abs(dx) > Math.abs(dy) * 1.4) pick((cur + (dx < 0 ? 1 : -1) + names.length) % names.length);
+    }, { passive: true });
     names.forEach((n, i) => {
       n.addEventListener('click', () => pick(i));
       if (FINE) n.addEventListener('pointerenter', () => pick(i));

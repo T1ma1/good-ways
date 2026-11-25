@@ -39,6 +39,7 @@
     <a href="#how">Как работаем</a>
     <a href="#routes">Направления</a>
     <a href="#reviews">Отзывы</a>
+    <div class="nav-foot"><a href="tel:88007750605">8 800 775-06-05</a><a href="tel:89036224808">8 903 622-48-08</a><a href="mailto:info@good-ways.ru">info@good-ways.ru</a></div>
   </nav>
   <a class="hdr-tel mono" href="tel:88007750605">8 800 775-06-05</a>
   <a class="btn btn-sm" href="#calc" data-magnet><span>Рассчитать</span></a>
@@ -60,7 +61,7 @@
     <p class="hero-lead">Собственный автопарк от 5 до 20 тонн: рефрижераторы, тенты и изотермы. Возим товары народного потребления и скоропортящиеся грузы по России и СНГ.</p>
     <div class="hero-cta">
       <a class="btn" href="#calc" data-magnet><span>Рассчитать доставку</span><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10h12M11 5l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
-      <a class="btn btn-line" href="tel:89036224808"><span>8 903 622-48-08</span></a>
+      <a class="btn btn-line btn-tel" href="tel:89036224808" aria-label="Позвонить: 8 903 622-48-08"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M6.6 2.8l1.6 3.6-1.5 1.2a9.6 9.6 0 0 0 5.7 5.7l1.2-1.5 3.6 1.6v2.2a1.6 1.6 0 0 1-1.7 1.6A13.6 13.6 0 0 1 2.8 4.5 1.6 1.6 0 0 1 4.4 2.8z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg><span>8 903 622-48-08</span></a>
     </div>
   </div>
 
@@ -78,8 +79,9 @@
         <linearGradient id="gSide" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#E4E7EB"/></linearGradient>
         <linearGradient id="gCab" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1E3764"/><stop offset="1" stop-color="#11213F"/></linearGradient>
         <linearGradient id="gGlass" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#E3ECF4"/><stop offset="1" stop-color="#9DB3C8"/></linearGradient>
+        <radialGradient id="gShadow"><stop offset="0" stop-color="#0D1524" stop-opacity=".45"/><stop offset=".7" stop-color="#0D1524" stop-opacity=".28"/><stop offset="1" stop-color="#0D1524" stop-opacity="0"/></radialGradient>
       </defs>
-      <ellipse class="shadow" cx="590" cy="352" rx="560" ry="9"/>
+      <ellipse class="shadow" cx="590" cy="352" rx="570" ry="10" fill="url(#gShadow)"/>
 
       <g class="body">
         <!-- прицеп -->
@@ -374,6 +376,8 @@
     <div class="ftr-bot mono"><span>© ООО «Гудвейс», 2019–2026</span><span>ИНН 5038144508 · ОГРН 1195050008812</span></div>
   </div>
 </footer>
+
+<div class="mbar" id="mbar"><a class="mbar-call" href="tel:88007750605"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M6.6 2.8l1.6 3.6-1.5 1.2a9.6 9.6 0 0 0 5.7 5.7l1.2-1.5 3.6 1.6v2.2a1.6 1.6 0 0 1-1.7 1.6A13.6 13.6 0 0 1 2.8 4.5 1.6 1.6 0 0 1 4.4 2.8z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>Позвонить</a><a class="mbar-go" href="#calc">Рассчитать<span class="mbar-x">&nbsp;доставку</span></a></div>
 
 <script src="js/main.js" defer></script>
 </body>

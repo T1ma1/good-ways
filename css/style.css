@@ -145,7 +145,7 @@ body:not(.is-loading) .intro{clip-path:inset(0 0 100% 0);pointer-events:none}
 @keyframes spin{to{transform:rotate(360deg)}}
 .tail{fill:#B23A2E}
 .lamp{fill:#F4EBD2;stroke:#1B2435;stroke-width:1}
-.shadow{fill:rgba(13,21,36,.28);filter:blur(5px)}
+.shadow{opacity:.9}
 .beam{display:none}
 .is-driving .body{animation:bob 1.4s ease-in-out infinite alternate}
 @keyframes bob{to{transform:translateY(-1.4px)}}
@@ -438,6 +438,92 @@ body:not(.is-loading) .intro{clip-path:inset(0 0 100% 0);pointer-events:none}
 @media (max-height:700px) and (min-width:901px){
   .hero-lead{display:none}
   .hero-cta{margin-top:22px}
+}
+
+/* ============ ТЕЛЕФОН: то же движение без мыши ============ */
+html{-webkit-tap-highlight-color:transparent}
+.btn-tel svg{display:none}
+.nav-foot,.mbar,.rev-dots{display:none}
+/* строки грузов оживают сами, когда доезжают до середины экрана */
+.cargo-row.is-act{color:var(--ivory);padding-left:14px;padding-right:14px}
+.cargo-row.is-act::before{transform:none}
+.cargo-row.is-act p,.cargo-row.is-act .cargo-n{color:rgba(245,243,239,.72)}
+.cargo-row.is-act .b3{transform:translateY(-8px) rotate(-6deg)}
+.cargo-row.is-act .b1{transform:translateX(-3px)}.cargo-row.is-act .b2{transform:translateX(3px)}
+.cargo-row.is-act .flake{transform:rotate(60deg) scale(1.06)}
+.cargo-row.is-act .g1{animation:spin 4s linear infinite}.cargo-row.is-act .g2{animation:spin 2.7s linear infinite reverse}
+.cargo-row.is-act .ic-size .bx{transform:scale(1.12)}
+.cargo-row.is-act .a1{transform:scaleX(1.1)}
+@media (hover:none){
+  .ftr-word.is-in span::after{clip-path:inset(-10% 0 -10% 0)}
+  .marks span{color:rgba(13,21,36,.16)}
+}
+@media (max-width:1080px){
+  .nav a{opacity:0;transform:translateY(26px);transition:opacity .5s ease,transform .8s var(--ease)}
+  .nav.is-open a{opacity:1;transform:none}
+  .nav.is-open a:nth-child(1){transition-delay:.18s}.nav.is-open a:nth-child(2){transition-delay:.24s}.nav.is-open a:nth-child(3){transition-delay:.3s}.nav.is-open a:nth-child(4){transition-delay:.36s}.nav.is-open a:nth-child(5){transition-delay:.42s}
+  .nav-foot{display:grid;gap:4px;margin-top:34px;padding-top:24px;border-top:1px solid var(--line);opacity:0;transition:opacity .7s ease}
+  .nav.is-open .nav-foot{opacity:1;transition-delay:.5s}
+  .nav .nav-foot a{font-family:var(--fb);font-weight:400;font-size:17px;letter-spacing:0;padding:6px 0;color:var(--mute);opacity:1;transform:none;transition:none}
+}
+@media (max-width:900px){
+  /* первый экран: крупная кабина, прицеп уходит за край */
+  :root{--tw:min(165vw,72svh)}
+  .truck{right:5vw;max-width:none}
+  .hero-h{font-size:clamp(30px,9vw,54px)}
+  .t-brand{font-size:52px;transform:translateX(245px)}
+  .t-sub{font-size:12px;transform:translateX(245px)}
+  .hero-cta{flex-wrap:nowrap}
+  .hero-cta .btn{flex:1 1 auto}
+  .hero-cta .btn-tel{flex:0 0 58px;width:58px;padding:0}
+  .btn-tel svg{display:block;width:20px;height:20px}
+  .btn-tel span{display:none}
+  /* направления: карта сразу под заголовком, маршрут и города под ней */
+  .routes{gap:0}
+  .routes-copy{display:contents}
+  .readout{order:1;margin:26px 0 0;padding:18px 0 0;border-bottom:0}
+  .radar{order:2;margin:4px calc(var(--pad)*-.6) 0}
+  .cities{order:3;margin-top:6px}
+  .readout b{font-size:28px}
+  .cfg-specs dd{font-size:clamp(24px,7.6vw,32px);white-space:nowrap}
+  .cfg-specs dd.sm{white-space:normal}
+  /* отзыв листается пальцем */
+  .rev-body{touch-action:pan-y}
+  .rev-dots{display:flex;gap:6px;margin-top:26px;grid-area:3/1}
+  .rev-dots i{width:18px;height:2px;background:var(--line2);transition:background .4s,width .5s var(--ease)}
+  .rev-dots i.is-on{background:var(--ink);width:34px}
+  /* нижняя панель */
+  .mbar{position:fixed;z-index:40;left:10px;right:10px;bottom:calc(10px + env(safe-area-inset-bottom));display:grid;grid-template-columns:auto 1fr;gap:8px;padding:8px;border-radius:999px;background:rgba(245,243,239,.92);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);box-shadow:0 0 0 1px var(--line),0 14px 40px -14px rgba(13,21,36,.35);transform:translateY(160%);transition:transform .7s var(--ease)}
+  .mbar.is-on{transform:none}
+  .mbar a{display:flex;align-items:center;justify-content:center;gap:8px;height:48px;border-radius:999px;font-family:var(--fh);font-weight:500;font-size:15.5px;transition:transform .4s var(--ease)}
+  .mbar a:active{transform:scale(.96)}
+  .mbar-call{padding:0 18px;box-shadow:inset 0 0 0 1px var(--line2)}
+  .mbar-call svg{width:17px;height:17px}
+  .mbar-go{background:var(--ink);color:#fff}
+  .ftr{padding-bottom:44px}
+  /* маршрут: метки и грузовик крупнее, чтобы читались на маленькой схеме */
+  .how-map svg{max-height:33svh}
+  .how-node circle{r:27px}
+  .how-node text{font-size:22px}
+  .how-truck rect{transform:scale(1.7)}
+  .mbar a{white-space:nowrap}
+}
+/* короткие телефоны: первый экран и маршрут должны помещаться целиком */
+@media (max-width:900px) and (max-height:650px){
+  .hero-lead{display:none}
+  .hero-cta{margin-top:26px}
+}
+@media (max-width:900px) and (max-height:720px){
+  .hero-copy{padding-top:88px}
+  .how-pin{padding-top:72px}
+  .how-map svg{max-height:25svh}
+  .how .h2{font-size:24px;margin-top:8px}
+  .steps{margin-top:10px}
+  .steps li{padding:7px 0}
+}
+@media (max-width:359px){
+  .mbar-x{display:none}
+  .hero .eyebrow{font-size:11px;letter-spacing:.1em}
 }
 
 /* ============ БЕЗ ДВИЖЕНИЯ ============ */
