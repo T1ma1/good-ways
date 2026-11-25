@@ -25,10 +25,10 @@
     hero.classList.add('is-driving');
     if (RM || !hero.getAnimations) return;
     const anims = hero.getAnimations({ subtree: true }).filter(a => a.animationName === 'slide' || a.animationName === 'spin');
-    const t0 = performance.now(), dur = 2600;
+    const t0 = performance.now(), dur = 3200;
     (function ramp(now) {
       const k = clamp((now - t0) / dur, 0, 1);
-      const rate = 0.04 + 0.96 * (1 - Math.pow(1 - k, 3));   // плавный разгон
+      const rate = 0.25 + 0.75 * (1 - Math.pow(1 - k, 3));   // плавный разгон
       anims.forEach(a => { a.playbackRate = rate; });
       if (k < 1) requestAnimationFrame(ramp);
     })(t0);
@@ -38,8 +38,7 @@
     if (started) return; started = true;
     body.classList.remove('is-loading');
     body.classList.add('is-ready');
-    setTimeout(() => hero.classList.add('is-drawn'), RM ? 0 : 450);
-    setTimeout(drive, RM ? 0 : 2900);
+    setTimeout(() => { hero.classList.add('is-drawn'); drive(); }, RM ? 0 : 350);
   }
   (function intro() {
     const pct = $('.intro-pct'), line = $('.intro-line i');
@@ -61,6 +60,7 @@
   let lastY = 0;
   addEventListener('scroll', () => {
     const y = scrollY;
+    hdr.classList.toggle('is-scrolled', y > 24);
     if (!nav.classList.contains('is-open')) hdr.classList.toggle('is-hidden', y > 400 && y > lastY);
     lastY = y;
   }, { passive: true });
@@ -106,7 +106,7 @@
   if (FINE && !RM) $$('[data-magnet]').forEach(b => {
     b.addEventListener('pointermove', e => {
       const r = b.getBoundingClientRect();
-      b.style.transform = `translate(${(e.clientX - r.left - r.width / 2) * 0.22}px, ${(e.clientY - r.top - r.height / 2) * 0.32}px)`;
+      b.style.transform = `translate(${(e.clientX - r.left - r.width / 2) * 0.14}px, ${(e.clientY - r.top - r.height / 2) * 0.2}px)`;
     });
     b.addEventListener('pointerleave', () => { b.style.transform = ''; });
   });
@@ -192,7 +192,7 @@
   const temp = $('#temp'), tempOut = $('#tempOut');
   const mix = (a, b, t) => a.map((v, i) => Math.round(lerp(v, b[i], t)));
   function applyTemp() {
-    const v = +temp.value, ICE = [127, 212, 255], MID = [234, 240, 255], HOT = [255, 178, 62];
+    const v = +temp.value, ICE = [205, 224, 240], MID = [245, 243, 239], HOT = [246, 222, 196];
     const c = v <= 0 ? mix(ICE, MID, (v + 20) / 20) : mix(MID, HOT, v / 20);
     stage.style.setProperty('--tc', `rgb(${c.join(',')})`);
     const txt = (v < 0 ? '−' + Math.abs(v) : v > 0 ? '+' + v : '0') + ' °C';
@@ -293,13 +293,10 @@
       btn.addEventListener('pointerenter', act); btn.addEventListener('focus', act); btn.addEventListener('click', act);
       return { name, km, x, y, line, g, btn };
     });
-    // Москва и база в Пушкино
-    const [px, py] = proj(56.01, 37.85);
+    // Москва
     svg('circle', { class: 'r-mskp', r: 9 }, root);
     svg('circle', { class: 'r-msk', r: 9 }, root);
     svg('text', { class: 'r-mskt', x: -16, y: -16, 'text-anchor': 'end' }, root).textContent = 'Москва';
-    svg('circle', { r: 4, cx: px, cy: py, fill: 'var(--ice)' }, root);
-    svg('text', { class: 'r-base', x: px + 10, y: py - 8 }, root).textContent = 'БАЗА · ПУШКИНО';
     const p1 = svg('circle', { class: 'r-pulse', r: 6 }, root), p2 = svg('circle', { class: 'r-pulse', r: 6 }, root);
 
     let active = -1, userAt = -1e9, visible = false;
