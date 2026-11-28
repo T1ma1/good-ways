@@ -72,7 +72,7 @@ button{background:none;border:0;cursor:pointer}
 body:not(.is-loading) .intro{clip-path:inset(0 0 100% 0);pointer-events:none}
 
 /* ---------- шапка ---------- */
-.hdr{position:fixed;z-index:50;top:0;left:0;right:0;display:flex;align-items:center;gap:26px;height:76px;padding:0 var(--pad);transition:transform .6s var(--ease),background .4s,box-shadow .4s}
+.hdr{position:fixed;z-index:50;top:0;left:0;right:0;display:flex;align-items:center;gap:26px;height:76px;padding:0 max(var(--pad),calc((100% - var(--max))/2));transition:transform .6s var(--ease),background .4s,box-shadow .4s}
 .hdr.is-scrolled{background:rgba(245,243,239,.9);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);box-shadow:0 1px 0 var(--line)}
 .hdr.is-hidden{transform:translateY(-110%)}
 .logo{display:flex;align-items:center;gap:10px;font-family:var(--fh);font-weight:600;letter-spacing:-.01em;font-size:18px;margin-right:auto}
@@ -104,7 +104,7 @@ body:not(.is-loading) .intro{clip-path:inset(0 0 100% 0);pointer-events:none}
 .hero-cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:32px;transition-delay:.35s}
 .is-ready .ln>span{transform:none}
 .is-ready .hero .eyebrow,.is-ready .hero-lead,.is-ready .hero-cta,.is-ready .scroll-hint{opacity:1;transform:none}
-.scroll-hint{position:absolute;z-index:4;left:var(--pad);bottom:calc(var(--road)*.5 - 8px);display:flex;align-items:center;gap:12px;color:rgba(245,243,239,.8);transition-delay:1.4s}
+.scroll-hint{position:absolute;z-index:4;left:max(var(--pad),calc((100% - var(--max))/2));bottom:calc(var(--road)*.5 - 8px);display:flex;align-items:center;gap:12px;color:rgba(245,243,239,.8);transition-delay:1.4s}
 .scroll-hint i{width:44px;height:1px;background:rgba(245,243,239,.3);position:relative;overflow:hidden}
 .scroll-hint i::after{content:"";position:absolute;inset:0;background:var(--ivory);animation:hint 2.6s var(--ease2) infinite}
 @keyframes hint{0%{transform:translateX(-100%)}60%,100%{transform:translateX(100%)}}
@@ -128,7 +128,7 @@ body:not(.is-loading) .intro{clip-path:inset(0 0 100% 0);pointer-events:none}
 .dash{--t:240px;--d:.55s;position:absolute;left:0;top:20%;height:3px;width:calc(100% + 240px);background:repeating-linear-gradient(90deg,rgba(245,243,239,.8) 0 84px,transparent 84px 240px)}
 
 /* фура: чистая иллюстрация */
-.truck{position:absolute;right:clamp(-30px,3vw,90px);bottom:calc(var(--road)*.52 - var(--tw)*.0255);width:var(--tw);height:auto;overflow:visible;z-index:2;opacity:0;transform:translate3d(-34%,0,0);transition:transform 2.4s cubic-bezier(.16,.84,.24,1),opacity .9s ease}
+.truck{position:absolute;right:calc(max(var(--pad),(100% - var(--max))/2) - var(--tw)*.065);bottom:calc(var(--road)*.52 - var(--tw)*.0255);width:var(--tw);height:auto;overflow:visible;z-index:2;opacity:0;transform:translate3d(-34%,0,0);transition:transform 2.4s cubic-bezier(.16,.84,.24,1),opacity .9s ease}
 .is-drawn .truck{opacity:1;transform:none}
 .truck .dr{stroke:#1B2435;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;fill:none}
 .truck .thin{stroke-width:1;stroke:rgba(27,36,53,.35)}
@@ -497,7 +497,7 @@ html{-webkit-tap-highlight-color:transparent}
 @media (max-width:900px){
   /* первый экран: крупная кабина, прицеп уходит за край */
   :root{--tw:min(165vw,72svh)}
-  .truck{right:5vw;max-width:none}
+  .truck{right:calc(var(--pad) - var(--tw)*.065);max-width:none}
   .hero-h{font-size:clamp(30px,9vw,54px)}
   .t-brand{font-size:52px;transform:translateX(245px)}
   .t-sub{font-size:12px;transform:translateX(245px)}
@@ -552,6 +552,35 @@ html{-webkit-tap-highlight-color:transparent}
 @media (max-width:359px){
   .mbar-x{display:none}
   .hero .eyebrow{font-size:11px;letter-spacing:.1em}
+}
+
+/* ============ РОВНЫЕ КРАЯ ============ */
+/* оптика: крупные буквы и цифры имеют поля внутри знака — подтягиваем к линии колонки */
+.hero-h{margin-left:-.035em}
+.h2{margin-left:-.03em}
+.fact b{margin-left:-.04em}
+.ftr-word{margin-left:-.02em}
+.ftr-word span:last-child{padding-right:.05em}
+@media (max-width:900px){
+  .bill{max-width:none}
+  .mbar{max-width:520px;margin-inline:auto}
+}
+@media (max-width:520px){
+  .btn-wide{padding:0 16px;font-size:16px;gap:8px}
+}
+/* планшет: фура видна целиком, поэтому логотип на прицепе по центру, как на десктопе */
+@media (min-width:601px) and (max-width:900px){
+  :root{--tw:min(94vw,72svh)}
+  .truck{right:calc(var(--pad) - var(--tw)*.065)}
+  .t-brand{font-size:62px;transform:none}
+  .t-sub{font-size:14px;transform:none}
+  .hero-cta .btn{flex:0 0 auto}
+  .hero-cta .btn-tel{flex:0 0 58px}
+  .f2{grid-template-columns:1fr 1fr}
+}
+@media (max-width:900px) and (min-height:900px){
+  .how-pin{align-items:center;padding-top:0}
+  .how-map svg{max-height:38svh}
 }
 
 /* ============ БЕЗ ДВИЖЕНИЯ ============ */
