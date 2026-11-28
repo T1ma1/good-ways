@@ -238,7 +238,7 @@
   buildCfg('ref');
   new IntersectionObserver((es, o) => {
     if (!es[0].isIntersecting) return;
-    o.disconnect(); cfgSeen = true;
+    o.disconnect(); cfgSeen = true; cfg.classList.add('is-seen');
     cfgSvg.classList.add('is-loaded');
     const T = TYPES[cfgType]; countTo(spPal, T.pal, T.palTxt); countTo(spVol, T.vol, T.volTxt);
   }, { threshold: 0.45 }).observe(stage);
@@ -340,7 +340,7 @@
       active = i;
       items.forEach((it, k) => { const on = k === i; it.line.classList.toggle('is-on', on); it.g.classList.toggle('is-on', on); it.btn.classList.toggle('is-on', on); });
       roName.textContent = 'Москва ⇄ ' + items[i].name;
-      roKm.textContent = '≈ ' + items[i].km + ' км по трассе';
+      roKm.textContent = 'Рейсы в обе стороны';   // километров на старом сайте нет — не выдумываем
     }
     setActive(12);
     const order = [12, 4, 1, 8, 15, 6, 0, 9, 3, 14, 5, 10, 2, 13, 7, 11];
