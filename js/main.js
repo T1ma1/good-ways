@@ -41,17 +41,28 @@
     setTimeout(() => { hero.classList.add('is-drawn'); drive(); }, RM ? 0 : 350);
   }
   (function intro() {
-    const pct = $('.intro-pct'), line = $('.intro-line i');
+    const el = $('.intro');
     if (RM) { startHero(); return; }
-    setTimeout(startHero, 2600);                 // страховка: интро не может зависнуть
-    const t0 = performance.now(), dur = 1250;
-    (function tick(now) {
-      const k = clamp((now - t0) / dur, 0, 1);
-      const e = 1 - Math.pow(1 - k, 3);
-      pct.textContent = String(Math.round(e * 100)).padStart(3, '0');
-      line.style.setProperty('--p', e);
-      if (k < 1) requestAnimationFrame(tick); else setTimeout(startHero, 180);
-    })(t0);
+    // Вернулись с внутренней страницы (политика, согласие) — интро не повторяем, только раскрытие.
+    const nav = performance.getEntriesByType && performance.getEntriesByType('navigation')[0];
+    let inner = false;
+    try { inner = !!document.referrer && new URL(document.referrer).origin === location.origin && !(nav && nav.type === 'reload'); } catch (e) {}
+    if (inner) { el.classList.add('is-short'); setTimeout(startHero, 220); return; }
+    // Фура едет по кривой e = .7k + .3k² (та же, что cubic-bezier в CSS). Каждая буква
+    // поднимается, когда фура под ней почти проехала: из положения буквы считаем момент k.
+    const DUR = 1500, DELAY = 150;
+    const tw = $('.intro-truck', el).getBoundingClientRect().width, vw = innerWidth;
+    $$('.il', el).forEach(l => {
+      const r = l.getBoundingClientRect();
+      const e = clamp((r.left + r.width / 2 + tw * 0.8) / (vw + tw), 0, 1);
+      const k = (-0.7 + Math.sqrt(0.49 + 1.2 * e)) / 0.6;
+      l.style.setProperty('--d', Math.round(DELAY + k * DUR) + 'ms');
+    });
+    el.classList.add('is-go');
+    // Раскрываем экран, когда фура действительно уехала (анимация может стартовать позже таймера),
+    // и держим запасной таймер: интро не может зависнуть.
+    $('.intro-truck', el).addEventListener('animationend', () => setTimeout(startHero, 280), { once: true });
+    setTimeout(startHero, DELAY + DUR + 1300);
   })();
   new IntersectionObserver(([e]) => hero.classList.toggle('is-off', !e.isIntersecting)).observe(hero);
 
